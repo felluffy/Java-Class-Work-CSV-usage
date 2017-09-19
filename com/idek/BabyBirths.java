@@ -47,7 +47,8 @@ public class BabyBirths
 	//Returns the rank of the name of a name in a specific year if present
 	public int getRank(String name, String gender, int year)
 	{
-		String fileName = "data/yob" + String.valueOf(year) + "short.csv";
+		//String fileName = "data/yob" + String.valueOf(year) + "short.csv";
+		String fileName = "data/yob" + String.valueOf(year) + ".csv";
 		int rank = 0;
 		FileResource fr = new FileResource(fileName);
 		for(CSVRecord rec : fr.getCSVParser(false))
@@ -56,14 +57,52 @@ public class BabyBirths
 				continue;
 			rank++;
 			if(rec.get(0).equals(name))
+			{
+				//System.out.println("Number of babies named \'" +  rec.get(0) + "\' born are " + rec.get(2));
 				return rank;
+			}
 		}
 		return -1;
 	}
 	
+	//returns highest rank of a name in all of the data files
+	public int yearOfHighestRank(String name, String gender)
+	{
+		int minRank = Integer.MAX_VALUE;
+		int currRank;
+		int minRankContainingYear = -1;
+		for(int year = 1880; year <= 2014; year++)
+		{
+			/*
+			String fileName = "data/yob" + String.valueOf(year) + "short.csv";
+			FileResource fr = new FileResource(fileName);
+			currRank = 0;
+			for(CSVRecord rec : fr.getCSVParser(false))
+			{
+				if(!rec.get(1).equals(gender))
+					continue;
+				currRank++;
+				if(rec.get(0).equals(name))
+					break;
+			}
+			if(maxRank <= currRank)
+				currRank = maxRank;
+			*/
+			currRank = getRank(name, gender, year);
+			if(minRank > currRank)
+			{
+				minRank = currRank;
+				minRankContainingYear = year;
+			}
+		}
+		return minRankContainingYear;
+	}
+	
+	//Returns the name of a given rank in a year's file
 	public String getName(int year, int rank, String gender)
 	{
-		String fileName = "data/yob" + String.valueOf(year) + "short.csv";
+		//String fileName = "data/yob" + String.valueOf(year) + "short.csv";
+		String fileName = "data/yob" + String.valueOf(year) + ".csv";
 		FileResource fr = new FileResource(fileName);
 		int currRank = 0;
 		for(CSVRecord rec : fr.getCSVParser(false))
@@ -83,8 +122,13 @@ public class BabyBirths
 		int rank = getRank(name, gender, year);
 		String newName = getName(newYear, rank, gender);
 		if(newName.equals("NO NAME"))
-			newName = "Unspecified";
+			newName = "\"Unspecified\"";
 		System.out.println(name + " born in " + year + " would be named " + newName + " if " + (gender == "M" ? "he" : "she") + " was born in " + newYear);
+	}
+	
+	public void testYearOfHighestRank()
+	{
+		System.out.println(yearOfHighestRank("Mason", "M"));
 	}
 	
 	public void testWhatIsNameInYear()
@@ -114,9 +158,10 @@ public class BabyBirths
 	
 	public void testClassMethods()
 	{
-		testWhatIsNameInYear();
-		testTotalBirths();
-		testGetRank();
-		testGetName();
+		testYearOfHighestRank();
+		//testWhatIsNameInYear();
+		//testTotalBirths();
+		//testGetRank();
+		//testGetName();
 	}
 }
