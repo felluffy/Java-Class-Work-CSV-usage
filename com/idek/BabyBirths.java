@@ -61,10 +61,48 @@ public class BabyBirths
 		return -1;
 	}
 	
+	public String getName(int year, int rank, String gender)
+	{
+		String fileName = "data/yob" + String.valueOf(year) + "short.csv";
+		FileResource fr = new FileResource(fileName);
+		int currRank = 0;
+		for(CSVRecord rec : fr.getCSVParser(false))
+		{
+			if(!rec.get(1).equals(gender))
+				continue;
+			currRank++;
+			if(currRank == rank)
+				return rec.get(0);
+		}
+		return "NO NAME";
+		
+	}
+	
+	void whatIsNameInYear(String name, int year, int newYear, String gender)
+	{
+		int rank = getRank(name, gender, year);
+		String newName = getName(newYear, rank, gender);
+		if(newName.equals("NO NAME"))
+			newName = "Unspecified";
+		System.out.println(name + " born in " + year + " would be named " + newName + " if " + (gender == "M" ? "he" : "she") + " was born in " + newYear);
+	}
+	
+	public void testWhatIsNameInYear()
+	{
+		whatIsNameInYear("Isabella", 2012, 2014, "F");
+	}
+	
 	public void testTotalBirths()
 	{
 		FileResource fr = new FileResource();
 		totalBirths(fr);
+	}
+	
+	public void testGetName()
+	{
+		System.out.println(getName(2012,  2, "M"));
+		System.out.println(getName(2012,  1, "F"));
+		System.out.println(getName(2012, 12, "M"));
 	}
 	
 	public void testGetRank()
@@ -76,7 +114,9 @@ public class BabyBirths
 	
 	public void testClassMethods()
 	{
+		testWhatIsNameInYear();
 		testTotalBirths();
 		testGetRank();
+		testGetName();
 	}
 }
