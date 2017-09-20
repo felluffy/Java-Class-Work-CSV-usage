@@ -167,6 +167,33 @@ public class BabyBirths
 		System.out.println(name + " born in " + year + " would be named " + newName + " if " + (gender == "M" ? "he" : "she") + " was born in " + newYear);
 	}
 	
+	int getTotalBirthsRankedHigher(int year, String name, String gender)
+	{
+		//String fileName = "data/yob" + String.valueOf(year) + "short.csv";
+		String fileName = "data/yob" + String.valueOf(year) + ".csv";
+		int totalRank = 0;
+		FileResource fr = new FileResource(fileName);
+		for(CSVRecord rec : fr.getCSVParser(false))
+		{
+			if(!rec.get(1).equals(gender))
+				continue;
+
+			if(rec.get(0).equals(name))
+			{
+				//System.out.println("Number of babies named \'" +  rec.get(0) + "\' born are " + rec.get(2));
+				return totalRank;
+			}
+			totalRank += Integer.valueOf(rec.get(2));
+		}
+		return -1;
+	}
+	
+	void testGetTotalBirthsRankedHigher()
+	{
+		int birthsRankedHigher = getTotalBirthsRankedHigher(2012, "Ethan", "M");
+		System.out.println(birthsRankedHigher);
+	}
+	
 	public void testGetAverageRank()
 	{
 		//System.out.println(getAverageRank("Mason", "M"));
@@ -205,11 +232,12 @@ public class BabyBirths
 	
 	public void testClassMethods()
 	{
-		testGetAverageRank();
-		testYearOfHighestRank();
-		testWhatIsNameInYear();
-		testTotalBirths();
-		testGetRank();
-		testGetName();
+		testGetTotalBirthsRankedHigher();
+		//testGetAverageRank();
+		//testYearOfHighestRank();
+		//testWhatIsNameInYear();
+		//testTotalBirths();
+		//testGetRank();
+		//testGetName();
 	}
 }
