@@ -1,5 +1,8 @@
 package com.idek;
 import org.apache.commons.csv.*;
+import java.io.File;
+import java.text.DecimalFormat;
+
 import edu.duke.*;
 public class BabyBirths 
 {
@@ -117,6 +120,44 @@ public class BabyBirths
 		
 	}
 	
+	public double getAverageRank(String name, String gender)
+	{
+		DirectoryResource dr = new DirectoryResource();
+		//int year;
+		DecimalFormat twoPoints = new DecimalFormat("#.##");
+		boolean found = false;
+		int currRank = 0;
+		int totalRank = 0;
+		int totalNumberOfRanks = 0;
+		//String fileName;
+		//String year;
+		
+		for (File fl : dr.selectedFiles())
+		{
+			currRank = 0;
+			FileResource fr = new FileResource(fl);
+			for(CSVRecord rec : fr.getCSVParser(false))
+			{
+				if(!rec.get(1).equals(gender))
+					continue;
+				currRank++;
+				if(rec.get(0).equals(name))
+				{
+					System.out.println(currRank + " " + totalRank);
+					found = true;
+					totalRank++;
+					totalNumberOfRanks += currRank;
+					break;
+				}
+			}
+
+		}
+		if(found == false)
+			return -1.0;
+		else
+			return Double.valueOf(twoPoints.format(totalNumberOfRanks / (double)totalRank));
+	}
+	
 	void whatIsNameInYear(String name, int year, int newYear, String gender)
 	{
 		int rank = getRank(name, gender, year);
@@ -124,6 +165,12 @@ public class BabyBirths
 		if(newName.equals("NO NAME"))
 			newName = "\"Unspecified\"";
 		System.out.println(name + " born in " + year + " would be named " + newName + " if " + (gender == "M" ? "he" : "she") + " was born in " + newYear);
+	}
+	
+	public void testGetAverageRank()
+	{
+		//System.out.println(getAverageRank("Mason", "M"));
+		System.out.println(getAverageRank("Jacob", "M"));
 	}
 	
 	public void testYearOfHighestRank()
@@ -158,10 +205,11 @@ public class BabyBirths
 	
 	public void testClassMethods()
 	{
+		testGetAverageRank();
 		testYearOfHighestRank();
-		//testWhatIsNameInYear();
-		//testTotalBirths();
-		//testGetRank();
-		//testGetName();
+		testWhatIsNameInYear();
+		testTotalBirths();
+		testGetRank();
+		testGetName();
 	}
 }
